@@ -42,7 +42,11 @@ export const mercadoPagoWebhook = async (req, res) => {
         if (payment.type === 'payment') {
             const paymentId = payment['data.id'];
 
-            const paymentInfo = await client.payment.findById(paymentId);
+            console.log(paymentId,'log del paymentid')
+
+            const paymentInfo = await client.payment.get(paymentId);
+
+            console.log(paymentInfo, 'payment info')
 
             console.log("💳 Payment status:", paymentInfo.status);
 
