@@ -39,24 +39,23 @@ export const mercadoPagoWebhook = async (req, res) => {
 
         console.log("🔔 Webhook recibido de Mercado Pago:", payment);
 
-        if (payment.type === 'payment') {
+        if (payment.type === "payment") {
             const paymentId = payment.data.id;
+            console.log("Payment ID:", paymentId);
 
-            console.log(paymentId,'log del paymentid')
+            // Opcional: consultar el estado usando el endpoint oficial
+            const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+                headers: {
+                    Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`
+                }
+            });
+            const paymentInfo = await response.json();
+            console.log("💳 Payment info:", paymentInfo);
 
-            const paymentInfo = await client.payment.get(paymentId);
+            // Actualizar la orden en la DB según el estado
+            // await Order.findOneAndUpdate({ paymentId }, { status: paymentInfo.status });
 
-            console.log(paymentInfo, 'payment info')
-
-            console.log("💳 Payment status:", paymentInfo.status);
-
-            //  Acá podrías actualizar la orden en tu base de datos:
-            // await Order.findOneAndUpdate(
-            //   { paymentId },
-            //   { status: paymentInfo.body.status }
-            // );
-
-            res.status(200).json({ message: 'Webhook processed correctly' });
+            return res.status(200).json({ message: "Webhook processed correctly" });
         } else {
             res.status(400).json({ message: 'not handled event' })
         }
