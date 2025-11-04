@@ -26,12 +26,16 @@ export const createStripePaymentIntent = async (req, res) => {
 };
 
 export const stripeWebHook = async (req, res) => {
+    console.log('Headers:', req.headers);
+    console.log('Raw body length:', req.body?.length);
+    console.log('Raw body type:', typeof req.body);
+
     let event;
     try {
         const sig = req.headers['stripe-signature'];
 
         event = stripe.webhooks.constructEvent(
-            req.rawBody,
+            req.body,
             sig,
             process.env.STRIPE_WEBHOOK_SECRET
         )

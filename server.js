@@ -11,11 +11,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-app.post('/api/payments/stripe/webhook', bodyParser.raw({ type: 'application/json' }))
+app.post(
+    '/api/payments/stripe/webhook',
+    bodyParser.raw({ type: 'application/json' }),
+    paymentRoutes // pasa al router
+);
 
-app.use(express.json());
-
-app.use('/api/payments', paymentRoutes);
+app.use('/api/payments', express.json(), paymentRoutes);
 
 app.get('/', (req, res) => {
     res.json('Backend running')
