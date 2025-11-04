@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import paymentRoutes from './routes/paymentRoutes.js';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -9,6 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+
+app.post('/api/payments/stripe/webhook', bodyParser.raw({ type: 'application/json' }))
+
 app.use(express.json());
 
 app.use('/api/payments', paymentRoutes);
