@@ -2,7 +2,7 @@ const products = [
   // FRUITS & NUTS
   {
     name: 'Almonds',
-    category: 'Nuts',
+    category: 'Tree Nuts',
     image: '/images/products/almonds.jpg',
     prices: [
       { presentation: '1/4kg', price: 3100 },
@@ -16,7 +16,7 @@ const products = [
   },
   {
     name: 'Walnuts',
-    category: 'Nuts',
+    category: 'Tree Nuts',
     image: '/images/products/walnuts.jpg',
     prices: [
       { presentation: '1/4kg', price: 3500 },

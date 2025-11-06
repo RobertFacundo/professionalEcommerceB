@@ -54,7 +54,7 @@ export const updateProduct = async (req, res) => {
 
         // Actualizar campos solo si vienen en req.body
         // if (req.body.name) product.name = req.body.name;
-        // if (req.body.category) product.category = req.body.category;
+        if (req.body.category) product.category = req.body.category;
         // if (req.body.prices) product.prices = JSON.parse(req.body.prices); // si envías array como string
         // if (req.body.stock !== undefined) product.stock = req.body.stock;
         // if (req.body.minQuantity !== undefined) product.minQuantity = req.body.minQuantity;
