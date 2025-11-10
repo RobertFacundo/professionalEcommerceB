@@ -13,9 +13,9 @@ export const createMercadoPagoPayment = async (req, res) => {
                 items,
                 payer,
                 back_urls: {
-                    success: "https://localhost:5173/success",
-                    failure: "https://localhost:5173/failure",
-                    pending: "https://localhost:5173/pending"
+                    success: "https://professional-mern-eccomerce-f.vercel.app/success",
+                    failure: "https://professional-mern-eccomerce-f.vercel.app/failure",
+                    pending: "https://professional-mern-eccomerce-f.vercel.app/pending"
                 },
                 auto_return: "approved"
             }
@@ -39,8 +39,8 @@ export const mercadoPagoWebhook = async (req, res) => {
 
         console.log("🔔 Webhook recibido de Mercado Pago:", payment);
 
-        if (payment.type === "payment") {
-            const paymentId = payment.data.id;
+        if (payment.type === "payment" || payment.action === 'payment.created') {
+            const paymentId = payment.data?.id || (payment?.data?.id);
             console.log("Payment ID:", paymentId);
 
             // Opcional: consultar el estado usando el endpoint oficial
@@ -50,14 +50,28 @@ export const mercadoPagoWebhook = async (req, res) => {
                 }
             });
             const paymentInfo = await response.json();
-            console.log("💳 Payment info:", paymentInfo);
+            console.log("💳 Payment info (from MP API):", paymentInfo?.status, paymentInfo);
 
-            // Actualizar la orden en la DB según el estado
-            // await Order.findOneAndUpdate({ paymentId }, { status: paymentInfo.status });
+            const externalRef = paymentInfo.external_reference;
+            if (externalRef) {
+                const newPaymentStatus = paymentInfo.status;
+                const newOrderStatus = newPaymentStatus === 'approved' ? 'paid' : 'pending';
+
+                const updated = await Order.findByIdAndUpdate(externalRef, {
+                    'payment.paymentId': paymentId,
+                    'payment.status': newPaymentStatus,
+                    status: newOrderStatus
+                }, { new: true })
+                console.log("✅ Order updated from webhook:", updated?._id, updated?.status)
+            } else {
+                console.warn("⚠️ No external_reference found in paymentInfo:", paymentInfo);
+            }
+
 
             return res.status(200).json({ message: "Webhook processed correctly" });
         } else {
-            res.status(400).json({ message: 'not handled event' })
+            console.log("ℹ️ Webhook event type not handled:", event.type);
+            return res.status(400).json({ message: 'not handled event' });
         }
     } catch (error) {
         console.error("❌ Error en webhook Mercado Pago:", error);

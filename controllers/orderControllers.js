@@ -38,8 +38,8 @@ export const createOrder = async (req, res) => {
             const preference = new Preference(mpClient);
             const items = products.map(p => ({
                 title: p.name || 'Product',
-                quantity: p.quantity,
-                unit_price: p.price,
+                quantity: Number(p.quantity),
+                unit_price: Number(p.price),
                 currency_id: 'ARS'
             }));
 
@@ -59,9 +59,12 @@ export const createOrder = async (req, res) => {
             };
 
             const prefResponse = await preference.create({ body });
+            console.log("💡 Mercado Pago preference response:", prefResponse);
 
             createOrder.payment.paymentId = prefResponse.id;
             await createOrder.save();
+
+            console.log("✅ Order saved and payment pref attached. orderId:", createOrder._id);
 
             return res.status(201).json({
                 orderId: createOrder._id,
@@ -98,7 +101,22 @@ export const createOrder = async (req, res) => {
                 orderId: createOrder._id,
                 payment: {
                     provider: 'transferencia',
-                    intructions: 'Make a transfer to the account number xxxx and the order id'
+                    instructions: 'Make a transfer to the account number xxxx and the order id'
+                }
+            });
+
+        } else if (paymentMethod === 'whatsapp') {
+            return res.status(201).json({
+                orderId: createOrder._id,
+                payment: {
+                    provider: 'whatsapp',
+                    instructions: 'This order would normally be sent via WhatsApp. Simulation mode active.'
+                },
+                messagePreview: {
+                    products,
+                    total,
+                    buyer,
+                    shippingMethod
                 }
             });
         } else {
