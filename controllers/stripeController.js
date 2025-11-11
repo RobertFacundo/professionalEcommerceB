@@ -8,7 +8,11 @@ export const createStripePaymentIntent = async (req, res) => {
     try {
         const { amount, currency } = req.body;
 
-        console.log('💡 Create PaymentIntent:', { amount, currency });
+        console.log('💡 Create PaymentIntent:', {
+            amountType: typeof amount,
+            amountValue: amount,
+            currency
+        });
 
         const paymentIntent = await stripe.paymentIntents.create({
             amount,

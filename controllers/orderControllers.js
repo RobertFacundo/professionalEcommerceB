@@ -89,7 +89,19 @@ export const createOrder = async (req, res) => {
             await createOrder.save();
 
             return res.status(201).json({
-                orderId: createOrder._id,
+                order: {
+                    _id: createOrder._id,
+                    products: createOrder.products,
+                    buyer: createOrder.buyer,
+                    shippingMethod: createOrder.shippingMethod,
+                    total: createOrder.total,
+                    status: createOrder.status,
+                    payment: {
+                        method: createOrder.payment.method,
+                        status: createOrder.payment.status,
+                        paymentId: createOrder.payment.paymentId
+                    }
+                },
                 payment: {
                     provider: 'stripe',
                     clientSecret: paymentIntent.client_secret,
