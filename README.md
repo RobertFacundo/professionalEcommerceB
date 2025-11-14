@@ -1,8 +1,5 @@
-# Professional E-commerce Backend
+# 🛒 Professional E-commerce Backend
 
----
-
-## Description
 Backend for a professional e-commerce application built with **Node.js**, **Express**, and **MongoDB**. It provides API endpoints to manage products, orders, and payments through **Stripe** and **MercadoPago**.
 
 ---
