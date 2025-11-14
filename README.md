@@ -55,8 +55,7 @@ Backend for a professional e-commerce application built with **Node.js**, **Expr
 - CORS enabled and environment variables managed with **dotenv**.
 
 ---
-
-- ## 📬 Contact
+## 📬 Contact
 
 - LinkedIn: [Facundo Robert](https://www.linkedin.com/in/robertfacundodev/)
 - Portfolio: [My Portfolio](https://facundorobert.vercel.app/) 
